@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salón de Uñas "Bella Uña" - Reserva tu Turno</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+        .calendar-day { transition: all 0.2s ease-in-out; }
+        .calendar-day:not(.disabled):hover { transform: scale(1.1); background-color: #f48fb1; color: white; }
+        .time-slot { transition: all 0.2s ease-in-out; }
+        .time-slot:not(.disabled):hover { background-color: #f06292; color: white; }
+        .disabled { background-color: #e0e0e0; cursor: not-allowed; color: #9e9e9e; }
+        .selected { background-color: #ec407a; color: white; }
+        .modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 50;
+        }
+        .modal-backdrop.active { opacity: 1; visibility: visible; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border-left-color: #ec407a;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navbar -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-pink-500">Bella Uña</a>
+            <div class="flex items-center space-x-4">
+                <a href="#services" class="text-gray-600 hover:text-pink-500">Servicios</a>
+                <a href="#booking" class="text-gray-600 hover:text-pink-500">Reservar</a>
+                <a href="#admin" class="text-gray-600 hover:text-pink-500">Admin</a>
+                <div id="auth-container">
+                    <!-- Botones de Login/Logout aparecerán aquí -->
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="container mx-auto px-6 py-16 text-center">
+        <div class="gradient-bg rounded-lg p-12 shadow-xl">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">El arte en tus manos</h1>
+            <p class="text-lg text-white mb-8">Descubre la belleza y el cuidado que tus uñas merecen. ¡Reserva tu turno hoy mismo!</p>
+            <a href="#booking" class="bg-white text-pink-500 font-bold py-3 px-8 rounded-full hover:bg-pink-100 transition duration-300">Reservar Ahora</a>
+        </div>
+    </main>
+    
+    <!-- User Info Section -->
+    <section id="user-info" class="hidden container mx-auto px-6 py-8">
+         <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-pink-500">
+             <h3 class="text-xl font-semibold mb-2">Mi Perfil</h3>
+             <p><strong>Nombre:</strong> <span id="user-name-display"></span></p>
+             <p><strong>Email:</strong> <span id="user-email-display"></span></p>
+             <p><strong>Teléfono:</strong> <span id="user-phone-display"></span></p>
+             <p><strong>Mis Puntos de Fidelidad:</strong> <span id="loyalty-points-display" class="font-bold text-pink-600">0</span></p>
+             <p class="text-xs text-gray-500 mt-2"><strong>ID de Usuario:</strong> <span id="user-id-display"></span></p>
+         </div>
+    </section>
+
+    <!-- My Bookings Section -->
+    <section id="my-bookings" class="hidden container mx-auto px-6 pb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Mis Próximas Reservas</h3>
+            <ul id="my-bookings-list" class="space-y-3">
+                <!-- User's bookings will be listed here -->
+            </ul>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="container mx-auto px-6 py-16">
+        <h2 class="text-3xl font-bold text-center mb-10">Reserva tu Turno</h2>
+        <div id="booking-login-prompt" class="text-center bg-yellow-100 p-4 rounded-lg">
+            <p>Por favor, <button id="prompt-login-btn" class="font-bold text-pink-600 underline">inicia sesión</button> para reservar un turno.</p>
+        </div>
+        <div id="booking-tool" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <!-- Calendar -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
+                    <h3 id="month-year" class="text-xl font-semibold"></h3>
+                    <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-center">
+                    <!-- Calendar days will be generated here -->
+                </div>
+            </div>
+            <!-- Time Slots & Manicurist -->
+            <div id="appointment-details" class="bg-white p-6 rounded-lg shadow-md hidden">
+                 <div class="mb-6">
+                    <label for="manicurist-select" class="block text-sm font-medium text-gray-700 mb-2">Selecciona tu manicura:</label>
+                    <select id="manicurist-select" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                        <option>Candela</option>
+                    </select>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Elige una Hora para <span id="selected-date-display"></span></h3>
+                    <div id="time-slots-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                        <!-- Time slots will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services" class="bg-pink-50 py-16">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-10">Nuestros Servicios</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <i class="fas fa-magic text-pink-500 text-4xl mb-4"></i>
+                    <h3 class="font-bold text-xl mb-2">Manicura Clásica</h3>
+                    <p>Cuidado completo, limado, cutículas y esmaltado tradicional.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <i class="fas fa-gem text-pink-500 text-4xl mb-4"></i>
+                    <h3 class="font-bold text-xl mb-2">Uñas Esculpidas</h3>
+                    <p>Acrílicas o de gel para una duración y estilo impecable.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <i class="fas fa-spa text-pink-500 text-4xl mb-4"></i>
+                    <h3 class="font-bold text-xl mb-2">Spa de Pies y Manos</h3>
+                    <p>Tratamiento relajante con exfoliación e hidratación profunda.</p>
+                </div>
+            </div>
+            
+            <!-- Gemini Nail Art Generator -->
+            <div id="nail-art-generator" class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
+                <h3 class="text-2xl font-bold text-center mb-2">✨ ¿Necesitas Inspiración?</h3>
+                <p class="text-center text-gray-600 mb-6">Describe un tema, color o estilo y te daremos ideas de diseños.</p>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="nail-art-prompt" placeholder="Ej: 'bosque encantado', 'verano neón', 'minimalista'" class="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                    <button id="generate-nail-art-btn" class="bg-pink-500 text-white font-bold py-2 px-6 rounded-md hover:bg-pink-600 flex items-center justify-center gap-2">
+                        <span id="nail-art-btn-text">Generar Ideas</span>
+                        <div id="nail-art-spinner" class="spinner hidden"></div>
+                    </button>
+                </div>
+                <div id="nail-art-results" class="mt-6 text-left"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <section id="admin" class="container mx-auto px-6 py-16">
+        <h2 class="text-3xl font-bold text-center mb-10">Panel de Administrador - Próximas Reservas</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <ul id="bookings-list" class="space-y-4">
+                <li class="text-gray-500">Cargando reservas...</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 Bella Uña. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md m-4 p-8 relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            <div id="auth-content"></div>
+        </div>
+    </div>
+    
+    <!-- Message Modal -->
+    <div id="message-modal" class="modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md m-4 p-6 relative text-center">
+            <h3 id="message-modal-title" class="text-xl font-bold mb-4"></h3>
+            <p id="message-modal-body" class="mb-6 text-left whitespace-pre-wrap"></p>
+            <div id="message-modal-buttons" class="flex justify-center space-x-4">
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- CONFIGURACIÓN DE FIREBASE ---
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- ESTADO GLOBAL ---
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let currentUser = null;
+        let currentUserProfile = null;
+        let selectedDate = null;
+        let bookingsCache = {};
+        let isAuthInitialized = false; 
+        let userHasBooking = false;
+        let myBookingsUnsubscribe = null;
+
+        // --- ELEMENTOS DEL DOM ---
+        const authContainer = document.getElementById('auth-container');
+        const authModal = document.getElementById('auth-modal');
+        const authContent = document.getElementById('auth-content');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const bookingTool = document.getElementById('booking-tool');
+        const bookingLoginPrompt = document.getElementById('booking-login-prompt');
+        const promptLoginBtn = document.getElementById('prompt-login-btn');
+        const userInfoSection = document.getElementById('user-info');
+        const myBookingsSection = document.getElementById('my-bookings');
+        const myBookingsList = document.getElementById('my-bookings-list');
+        const messageModal = document.getElementById('message-modal');
+        const messageModalTitle = document.getElementById('message-modal-title');
+        const messageModalBody = document.getElementById('message-modal-body');
+        const messageModalButtons = document.getElementById('message-modal-buttons');
+        const generateNailArtBtn = document.getElementById('generate-nail-art-btn');
+        const nailArtPromptInput = document.getElementById('nail-art-prompt');
+        const nailArtResultsContainer = document.getElementById('nail-art-results');
+        const nailArtSpinner = document.getElementById('nail-art-spinner');
+        const nailArtBtnText = document.getElementById('nail-art-btn-text');
+        const adminBookingsList = document.getElementById('bookings-list');
+        const appointmentDetailsContainer = document.getElementById('appointment-details');
+
+
+        // --- INICIALIZACIÓN Y AUTENTICACIÓN ---
+        async function initializeAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Error en la autenticación inicial:", error);
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user && !user.isAnonymous) {
+                currentUser = user;
+                await loadUserProfile(user.uid);
+                updateUIForLoggedInUser();
+                await loadUserLoyaltyPoints(user.uid);
+                listenForMyBookings(user.uid);
+            } else {
+                currentUser = user;
+                currentUserProfile = null;
+                updateUIForLoggedOutUser();
+            }
+
+            if (!isAuthInitialized) {
+                isAuthInitialized = true;
+                renderCalendar();
+                listenForBookings();
+            }
+        });
+
+        // --- LÓGICA DE UI (MODALES Y ESTADO) ---
+        function updateUIForLoggedInUser() {
+            authContainer.innerHTML = `<button id="logout-btn" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600">Salir</button>`;
+            document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+            userInfoSection.classList.remove('hidden');
+            myBookingsSection.classList.remove('hidden');
+            document.getElementById('user-name-display').textContent = currentUserProfile?.name || 'No disponible';
+            document.getElementById('user-email-display').textContent = currentUser.email;
+            document.getElementById('user-phone-display').textContent = currentUserProfile?.phone || 'No disponible';
+            document.getElementById('user-id-display').textContent = currentUser.uid;
+            bookingTool.classList.remove('hidden');
+            bookingLoginPrompt.classList.add('hidden');
+        }
+
+        function updateUIForLoggedOutUser() {
+            authContainer.innerHTML = `<button id="login-btn" class="text-gray-600 hover:text-pink-500">Ingresar</button>`;
+            document.getElementById('login-btn').addEventListener('click', () => showAuthForm('login'));
+            userInfoSection.classList.add('hidden');
+            myBookingsSection.classList.add('hidden');
+            bookingTool.classList.add('hidden');
+            bookingLoginPrompt.classList.remove('hidden');
+            if (myBookingsUnsubscribe) myBookingsUnsubscribe();
+            userHasBooking = false;
+        }
+
+        function showAuthForm(type) {
+            const isLogin = type === 'login';
+            authContent.innerHTML = `
+                <h2 class="text-2xl font-bold text-center mb-6">${isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</h2>
+                <form id="auth-form">
+                    <div id="register-fields" class="${isLogin ? 'hidden' : ''}">
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
+                            <input type="text" id="name" ${isLogin ? '' : 'required'} class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input type="tel" id="phone" ${isLogin ? '' : 'required'} class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                    </div>
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña (mín. 6 caracteres)</label>
+                        <input type="password" id="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
+                    </div>
+                    <button type="submit" class="w-full bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600">${isLogin ? 'Ingresar' : 'Registrarme'}</button>
+                </form>
+                <p class="text-center text-sm mt-4">
+                    ${isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}
+                    <button id="switch-auth-btn" class="text-pink-600 hover:underline">${isLogin ? 'Regístrate' : 'Inicia Sesión'}</button>
+                </p>
+                <p id="auth-error" class="text-red-500 text-sm text-center mt-2"></p>
+            `;
+            authModal.classList.add('active');
+            document.getElementById('auth-form').addEventListener('submit', (e) => handleAuthSubmit(e, type));
+            document.getElementById('switch-auth-btn').addEventListener('click', () => showAuthForm(isLogin ? 'register' : 'login'));
+        }
+        
+        function showMessageModal(title, body, buttons = [{text: 'OK', class: 'bg-pink-500', action: () => messageModal.classList.remove('active')}]) {
+            messageModalTitle.textContent = title;
+            messageModalBody.textContent = body;
+            messageModalButtons.innerHTML = '';
+            buttons.forEach(btnInfo => {
+                const button = document.createElement('button');
+                button.textContent = btnInfo.text;
+                button.className = `text-white px-4 py-2 rounded-md hover:opacity-80 ${btnInfo.class}`;
+                button.onclick = btnInfo.action;
+                messageModalButtons.appendChild(button);
+            });
+            messageModal.classList.add('active');
+        }
+
+        async function handleAuthSubmit(e, type) {
+            e.preventDefault();
+            const email = e.target.email.value;
+            const password = e.target.password.value;
+            const errorP = document.getElementById('auth-error');
+            errorP.textContent = '';
+            try {
+                if (type === 'register') {
+                    const name = e.target.name.value;
+                    const phone = e.target.phone.value;
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    // Create user profile document
+                    const profileRef = doc(db, `artifacts/${appId}/users/${user.uid}/profile/data`);
+                    await setDoc(profileRef, { name, phone, email });
+                    await initializeLoyaltyPoints(user.uid);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+                authModal.classList.remove('active');
+            } catch (error) {
+                console.error("Error de autenticación:", error.code, error.message);
+                if (error.code === 'auth/operation-not-allowed') {
+                    errorP.textContent = "Error: El registro por email está desactivado. Habilítalo en la consola de Firebase.";
+                 } else {
+                    errorP.textContent = "Error: El email o la contraseña no son válidos.";
+                 }
+            }
+        }
+        
+        closeModalBtn.addEventListener('click', () => authModal.classList.remove('active'));
+        promptLoginBtn.addEventListener('click', () => showAuthForm('login'));
+
+        // --- LÓGICA DE PERFIL DE USUARIO ---
+        async function loadUserProfile(userId) {
+            const profileRef = doc(db, `artifacts/${appId}/users/${userId}/profile/data`);
+            const docSnap = await getDoc(profileRef);
+            if (docSnap.exists()) {
+                currentUserProfile = docSnap.data();
+            } else {
+                console.log("No such profile document!");
+                currentUserProfile = null;
+            }
+        }
+
+        // --- LÓGICA DEL CALENDARIO ---
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendar-grid');
+            const monthYearEl = document.getElementById('month-year');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startDay = firstDay.getDay();
+            monthYearEl.textContent = `${firstDay.toLocaleString('es-ES', { month: 'long' })} ${currentYear}`;
+            calendarGrid.innerHTML = '<div class="font-bold">D</div><div class="font-bold">L</div><div class="font-bold">M</div><div class="font-bold">M</div><div class="font-bold">J</div><div class="font-bold">V</div><div class="font-bold">S</div>';
+            for (let i = 0; i < startDay; i++) calendarGrid.innerHTML += '<div></div>';
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayEl = document.createElement('div');
+                dayEl.textContent = day;
+                dayEl.classList.add('p-2', 'rounded-full', 'cursor-pointer', 'calendar-day');
+                dayEl.dataset.date = dateStr;
+                if (date < today) {
+                    dayEl.classList.add('disabled');
+                } else {
+                    dayEl.addEventListener('click', () => selectDate(dateStr));
+                }
+                if (selectedDate === dateStr) dayEl.classList.add('selected');
+                calendarGrid.appendChild(dayEl);
+            }
+        }
+        
+        document.getElementById('prev-month').addEventListener('click', () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); });
+        document.getElementById('next-month').addEventListener('click', () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(); });
+
+        // --- LÓGICA DE RESERVAS ---
+        async function selectDate(dateStr) {
+            selectedDate = dateStr;
+            renderCalendar();
+            appointmentDetailsContainer.classList.remove('hidden');
+            document.getElementById('selected-date-display').textContent = new Date(dateStr + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+            await renderTimeSlots(dateStr);
+        }
+
+        async function renderTimeSlots(dateStr) {
+            const timeSlotsGrid = document.getElementById('time-slots-grid');
+            timeSlotsGrid.innerHTML = 'Cargando turnos...';
+            const standardSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'];
+            const bookedSlots = await getBookingsForDate(dateStr);
+            timeSlotsGrid.innerHTML = '';
+            standardSlots.forEach(time => {
+                const slotEl = document.createElement('div');
+                slotEl.textContent = time;
+                slotEl.classList.add('p-2', 'rounded-md', 'cursor-pointer', 'text-center', 'border', 'border-gray-300', 'time-slot');
+                slotEl.dataset.time = time;
+                if (bookedSlots.includes(time)) {
+                    slotEl.classList.add('disabled');
+                } else {
+                    slotEl.addEventListener('click', () => bookAppointment(dateStr, time));
+                }
+                timeSlotsGrid.appendChild(slotEl);
+            });
+        }
+        
+        async function getBookingsForDate(dateStr) {
+            if (!auth.currentUser) return [];
+            if (bookingsCache[dateStr]) return bookingsCache[dateStr];
+            const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
+            const q = query(bookingsRef, where("date", "==", dateStr));
+            const querySnapshot = await getDocs(q);
+            const bookedTimes = querySnapshot.docs.map(doc => doc.data().time);
+            bookingsCache[dateStr] = bookedTimes;
+            return bookedTimes;
+        }
+
+        async function bookAppointment(date, time) {
+            if (!currentUser || currentUser.isAnonymous) {
+                showMessageModal('Acción Requerida', 'Debes iniciar sesión con tu cuenta para poder reservar un turno.');
+                return;
+            }
+            if (userHasBooking) {
+                showMessageModal('Reserva Existente', 'Ya tienes una reserva activa. Para cambiar de horario, por favor cancela tu reserva actual y luego elige un nuevo turno.');
+                return;
+            }
+
+            const manicurist = document.getElementById('manicurist-select').value;
+            const userName = currentUserProfile?.name || currentUser.email;
+
+            const proceedWithBooking = async () => {
+                try {
+                    messageModal.classList.remove('active');
+                    const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
+                    await addDoc(bookingsRef, { 
+                        userId: currentUser.uid, 
+                        userName: userName,
+                        userEmail: currentUser.email, 
+                        date: date, 
+                        time: time, 
+                        manicurist: manicurist,
+                        createdAt: new Date() 
+                    });
+                    await addLoyaltyPoints(currentUser.uid, 10);
+                    showMessageModal('¡Éxito!', `¡Tu reserva ha sido confirmada! Has ganado 10 puntos de fidelidad.`);
+                    bookingsCache[date] = null;
+                    await renderTimeSlots(date);
+                } catch (error) {
+                    console.error("Error al guardar la reserva: ", error);
+                    showMessageModal("Error", "Hubo un problema al procesar tu reserva. Por favor, inténtalo de nuevo.");
+                }
+            };
+            
+            showMessageModal(
+                'Confirmar Reserva',
+                `¿Deseas confirmar tu reserva para el ${new Date(date + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })} a las ${time} con ${manicurist}?`,
+                [
+                    {text: 'Cancelar', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')},
+                    {text: 'Confirmar', class: 'bg-pink-500', action: proceedWithBooking}
+                ]
+            );
+        }
+
+        function listenForMyBookings(userId) {
+            if (myBookingsUnsubscribe) myBookingsUnsubscribe(); 
+            const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
+            const q = query(bookingsRef, where("userId", "==", userId));
+
+            myBookingsUnsubscribe = onSnapshot(q, (snapshot) => {
+                myBookingsList.innerHTML = '';
+                const todayStr = new Date().toISOString().split('T')[0];
+                
+                const myFutureBookings = snapshot.docs
+                    .map(doc => ({ id: doc.id, ...doc.data() }))
+                    .filter(booking => booking.date >= todayStr);
+
+                if (myFutureBookings.length === 0) {
+                    myBookingsList.innerHTML = `<li class="text-gray-500">No tienes reservas próximas.</li>`;
+                    userHasBooking = false;
+                    return;
+                }
+                
+                userHasBooking = true;
+                myFutureBookings.sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+                myFutureBookings.forEach(booking => {
+                    const li = document.createElement('li');
+                    li.classList.add('p-3', 'bg-pink-50', 'rounded-md', 'flex', 'justify-between', 'items-center');
+                    li.innerHTML = `
+                        <div>
+                            <p class="font-semibold">${new Date(booking.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                            <p class="text-gray-700">a las ${booking.time} hs con ${booking.manicurist}</p>
+                        </div>
+                        <button data-booking-id="${booking.id}" data-booking-date="${booking.date}" class="cancel-btn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm">Cancelar</button>
+                    `;
+                    myBookingsList.appendChild(li);
+                });
+
+                document.querySelectorAll('.cancel-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const bookingId = e.target.dataset.bookingId;
+                        const bookingDate = e.target.dataset.bookingDate;
+                        cancelAppointment(bookingId, bookingDate);
+                    });
+                });
+            }, (error) => {
+                console.error("Error en el listener 'myBookings':", error);
+                myBookingsList.innerHTML = `<li class="text-red-500 font-semibold">Error al cargar tus reservas.</li>`;
+            });
+        }
+        
+        function cancelAppointment(bookingId, bookingDate) {
+             const proceedWithCancellation = async () => {
+                try {
+                    messageModal.classList.remove('active');
+                    const bookingRef = doc(db, `artifacts/${appId}/public/data/bookings`, bookingId);
+                    await deleteDoc(bookingRef);
+                    await addLoyaltyPoints(currentUser.uid, -10); // Deduct points
+                    showMessageModal('Reserva Cancelada', 'Tu reserva ha sido cancelada exitosamente.');
+                    
+                    bookingsCache[bookingDate] = null;
+                    if (selectedDate === bookingDate) {
+                        await renderTimeSlots(bookingDate);
+                    }
+                } catch (error) {
+                    console.error("Error al cancelar la reserva: ", error);
+                    showMessageModal("Error", "Hubo un problema al cancelar tu reserva.");
+                }
+            };
+
+            showMessageModal(
+                'Cancelar Reserva',
+                '¿Estás segura de que quieres cancelar tu reserva? Esta acción no se puede deshacer.',
+                [
+                    {text: 'No, mantener', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')},
+                    {text: 'Sí, cancelar', class: 'bg-red-500', action: proceedWithCancellation}
+                ]
+            );
+        }
+
+        // --- SISTEMA DE FIDELIZACIÓN ---
+        async function initializeLoyaltyPoints(userId) {
+            const loyaltyRef = doc(db, `artifacts/${appId}/users/${userId}/loyalty/points`);
+            await setDoc(loyaltyRef, { value: 0 });
+        }
+        
+        async function loadUserLoyaltyPoints(userId) {
+            const loyaltyRef = doc(db, `artifacts/${appId}/users/${userId}/loyalty/points`);
+            const docSnap = await getDoc(loyaltyRef);
+            document.getElementById('loyalty-points-display').textContent = docSnap.exists() ? docSnap.data().value : '0';
+        }
+        
+        async function addLoyaltyPoints(userId, pointsToAdd) {
+             const loyaltyRef = doc(db, `artifacts/${appId}/users/${userId}/loyalty/points`);
+             const docSnap = await getDoc(loyaltyRef);
+             const currentPoints = docSnap.exists() ? docSnap.data().value : 0;
+             const newPoints = Math.max(0, currentPoints + pointsToAdd); // Ensure points don't go below zero
+             await setDoc(loyaltyRef, { value: newPoints });
+             document.getElementById('loyalty-points-display').textContent = newPoints;
+        }
+        
+        // --- GEMINI API FUNCTIONS ---
+
+        async function callGemini(prompt) {
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    console.error("Respuesta inesperada de la API:", result);
+                    return "No se pudo obtener una respuesta. Inténtalo de nuevo.";
+                }
+            } catch (error) {
+                console.error("Error llamando a la API de Gemini:", error);
+                return "Ocurrió un error al contactar al servicio de IA.";
+            }
+        }
+        
+        generateNailArtBtn.addEventListener('click', async () => {
+            const userInput = nailArtPromptInput.value.trim();
+            if (!userInput) {
+                showMessageModal("Entrada Requerida", "Por favor, escribe un tema para generar ideas.");
+                return;
+            }
+
+            nailArtSpinner.classList.remove('hidden');
+            nailArtBtnText.textContent = 'Generando...';
+            generateNailArtBtn.disabled = true;
+            nailArtResultsContainer.innerHTML = '';
+
+            const prompt = `Actúa como una experta manicurista y artista de uñas para el salón "Bella Uña". Genera 3 ideas creativas y concisas para un diseño de uñas inspirado en el tema: "${userInput}". Para cada idea, proporciona un nombre creativo, una breve descripción del diseño y los colores clave. Formatea tu respuesta estrictamente como una lista de viñetas.`;
+            
+            const resultText = await callGemini(prompt);
+            
+            nailArtResultsContainer.innerHTML = resultText
+                .split('\n')
+                .map(line => `<p class="mb-2">${line.replace(/\*/g, '•')}</p>`)
+                .join('');
+            
+            nailArtSpinner.classList.add('hidden');
+            nailArtBtnText.textContent = 'Generar Ideas';
+            generateNailArtBtn.disabled = false;
+        });
+
+        async function generateReminder(booking) {
+            const formattedDate = new Date(booking.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+            const prompt = `Actúa como la recepcionista amigable del salón de uñas "Bella Uña". Escribe un recordatorio de turno corto, profesional y amigable para enviar a una clienta (${booking.userName}) por WhatsApp o SMS. El turno es el ${formattedDate} a las ${booking.time} hs con la manicura ${booking.manicurist}. Incluye una frase para que confirmen su asistencia.`;
+            const reminderText = await callGemini(prompt);
+            
+            showMessageModal(
+                '✨ Recordatorio Sugerido',
+                reminderText,
+                [
+                    {text: 'Copiar', class: 'bg-pink-500', action: () => {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = reminderText;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        showMessageModal('Copiado', 'El mensaje se ha copiado a tu portapapeles.');
+                    }},
+                    {text: 'Cerrar', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')}
+                ]
+            );
+        }
+
+        // --- PANEL DE ADMINISTRADOR ---
+        function listenForBookings() {
+            if (!auth.currentUser) return;
+            
+            const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
+            onSnapshot(query(bookingsRef), (snapshot) => {
+                adminBookingsList.innerHTML = '';
+                const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                bookings.sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time));
+                if (bookings.length === 0) {
+                    adminBookingsList.innerHTML = '<li class="text-gray-500">No hay reservas próximas.</li>';
+                    return;
+                }
+                bookings.forEach(booking => {
+                    const li = document.createElement('li');
+                    li.classList.add('p-3', 'bg-pink-50', 'rounded-md', 'flex', 'justify-between', 'items-center', 'flex-wrap', 'gap-2');
+                    li.innerHTML = `
+                        <div>
+                            <p class="font-semibold">${new Date(booking.date + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })} - ${booking.time}</p>
+                            <p class="text-sm text-gray-600">Cliente: ${booking.userName}</p>
+                            <p class="text-sm text-gray-500">Manicura: ${booking.manicurist}</p>
+                        </div>
+                        <button data-booking='${JSON.stringify(booking)}' class="reminder-btn bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 text-sm flex items-center gap-1">
+                           ✨ Generar Recordatorio
+                        </button>
+                    `;
+                    adminBookingsList.appendChild(li);
+                });
+
+                adminBookingsList.addEventListener('click', (e) => {
+                    const button = e.target.closest('.reminder-btn');
+                    if (button) {
+                        const bookingData = JSON.parse(button.dataset.booking);
+                        generateReminder(bookingData);
+                    }
+                });
+
+                bookingsCache = {};
+                if (selectedDate) renderTimeSlots(selectedDate);
+            }, (error) => {
+                console.error("Error en el listener de Firestore:", error);
+                adminBookingsList.innerHTML = `<li class="text-red-500 font-semibold">Error al cargar reservas: Permiso denegado. Verifica las reglas de seguridad de Firestore.</li>`;
+            });
+        }
+        
+        // --- INICIO DE LA APP ---
+        window.onload = async () => {
+            await initializeAuth();
+        };
+    </script>
+</body>
+</html>
+
