@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salón de Uñas "Bella Uña" - Reserva tu Turno</title>
+    <title>Salón de Uñas "Nebula" - Reserva tu Turno</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+        body { font-family: 'Inter', sans-serif; background-color: #f3e8ff; }
+        .gradient-bg { background: linear-gradient(135deg, #4c1d95, #a78bfa); }
         .calendar-day { transition: all 0.2s ease-in-out; }
-        .calendar-day:not(.disabled):hover { transform: scale(1.1); background-color: #f48fb1; color: white; }
+        .calendar-day:not(.disabled):hover { transform: scale(1.1); background-color: #8b5cf6; color: white; }
         .time-slot { transition: all 0.2s ease-in-out; }
-        .time-slot:not(.disabled):hover { background-color: #f06292; color: white; }
+        .time-slot:not(.disabled):hover { background-color: #7c3aed; color: white; }
         .disabled { background-color: #e0e0e0; cursor: not-allowed; color: #9e9e9e; }
-        .selected { background-color: #ec407a; color: white; }
+        .selected { background-color: #6d28d9; color: white; }
         .modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
@@ -26,25 +26,25 @@
             to { transform: rotate(360deg); }
         }
         .spinner {
-            border: 2px solid rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            border-left-color: #ec407a;
+            border-left-color: #fff;
             animation: spin 1s linear infinite;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-purple-50 text-gray-800">
 
     <!-- Navbar -->
     <header class="bg-white shadow-md sticky top-0 z-40">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-pink-500">Bella Uña</a>
+            <a href="#" class="text-2xl font-bold text-purple-600">Nebula Nails</a>
             <div class="flex items-center space-x-4">
-                <a href="#services" class="text-gray-600 hover:text-pink-500">Servicios</a>
-                <a href="#booking" class="text-gray-600 hover:text-pink-500">Reservar</a>
-                <a href="#admin" class="text-gray-600 hover:text-pink-500">Admin</a>
+                <a href="#services" class="text-gray-600 hover:text-purple-600">Servicios</a>
+                <a href="#booking" class="text-gray-600 hover:text-purple-600">Reservar</a>
+                <a href="#admin" id="admin-nav-link" class="text-gray-600 hover:text-purple-600 hidden">Admin</a>
                 <div id="auth-container">
                     <!-- Botones de Login/Logout aparecerán aquí -->
                 </div>
@@ -55,22 +55,20 @@
     <!-- Hero Section -->
     <main class="container mx-auto px-6 py-16 text-center">
         <div class="gradient-bg rounded-lg p-12 shadow-xl">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">El arte en tus manos</h1>
-            <p class="text-lg text-white mb-8">Descubre la belleza y el cuidado que tus uñas merecen. ¡Reserva tu turno hoy mismo!</p>
-            <a href="#booking" class="bg-white text-pink-500 font-bold py-3 px-8 rounded-full hover:bg-pink-100 transition duration-300">Reservar Ahora</a>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">El universo en tus uñas</h1>
+            <p class="text-lg text-white mb-8">Diseños cósmicos y un cuidado estelar. ¡Reserva tu turno y brilla!</p>
+            <a href="#booking" class="bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-purple-100 transition duration-300">Reservar Ahora</a>
         </div>
     </main>
     
     <!-- User Info Section -->
     <section id="user-info" class="hidden container mx-auto px-6 py-8">
-         <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-pink-500">
-             <h3 class="text-xl font-semibold mb-2">Mi Perfil</h3>
-             <p><strong>Nombre:</strong> <span id="user-name-display"></span></p>
-             <p><strong>Email:</strong> <span id="user-email-display"></span></p>
-             <p><strong>Teléfono:</strong> <span id="user-phone-display"></span></p>
-             <p><strong>Mis Puntos de Fidelidad:</strong> <span id="loyalty-points-display" class="font-bold text-pink-600">0</span></p>
-             <p class="text-xs text-gray-500 mt-2"><strong>ID de Usuario:</strong> <span id="user-id-display"></span></p>
-         </div>
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+            <h3 class="text-xl font-semibold mb-2">Mi Perfil</h3>
+            <p><strong>Usuario:</strong> <span id="user-name-display"></span></p>
+            <p><strong>Mis Puntos Estelares:</strong> <span id="loyalty-points-display" class="font-bold text-purple-600">0</span></p>
+            <p class="text-xs text-gray-500 mt-2"><strong>ID de Usuario:</strong> <span id="user-id-display"></span></p>
+        </div>
     </section>
 
     <!-- My Bookings Section -->
@@ -87,7 +85,7 @@
     <section id="booking" class="container mx-auto px-6 py-16">
         <h2 class="text-3xl font-bold text-center mb-10">Reserva tu Turno</h2>
         <div id="booking-login-prompt" class="text-center bg-yellow-100 p-4 rounded-lg">
-            <p>Por favor, <button id="prompt-login-btn" class="font-bold text-pink-600 underline">inicia sesión</button> para reservar un turno.</p>
+            <p>Por favor, <button id="prompt-login-btn" class="font-bold text-purple-600 underline">inicia sesión</button> para reservar un turno.</p>
         </div>
         <div id="booking-tool" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             <!-- Calendar -->
@@ -101,14 +99,8 @@
                     <!-- Calendar days will be generated here -->
                 </div>
             </div>
-            <!-- Time Slots & Manicurist -->
+            <!-- Time Slots -->
             <div id="appointment-details" class="bg-white p-6 rounded-lg shadow-md hidden">
-                 <div class="mb-6">
-                    <label for="manicurist-select" class="block text-sm font-medium text-gray-700 mb-2">Selecciona tu manicura:</label>
-                    <select id="manicurist-select" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
-                        <option>Candela</option>
-                    </select>
-                </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-4">Elige una Hora para <span id="selected-date-display"></span></h3>
                     <div id="time-slots-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
@@ -120,57 +112,51 @@
     </section>
     
     <!-- Services Section -->
-    <section id="services" class="bg-pink-50 py-16">
+    <section id="services" class="bg-purple-100 py-16">
         <div class="container mx-auto px-6">
             <h2 class="text-3xl font-bold text-center mb-10">Nuestros Servicios</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
-                <div class="bg-white p-8 rounded-lg shadow-md">
-                    <i class="fas fa-magic text-pink-500 text-4xl mb-4"></i>
-                    <h3 class="font-bold text-xl mb-2">Manicura Clásica</h3>
-                    <p>Cuidado completo, limado, cutículas y esmaltado tradicional.</p>
-                </div>
-                <div class="bg-white p-8 rounded-lg shadow-md">
-                    <i class="fas fa-gem text-pink-500 text-4xl mb-4"></i>
-                    <h3 class="font-bold text-xl mb-2">Uñas Esculpidas</h3>
-                    <p>Acrílicas o de gel para una duración y estilo impecable.</p>
-                </div>
-                <div class="bg-white p-8 rounded-lg shadow-md">
-                    <i class="fas fa-spa text-pink-500 text-4xl mb-4"></i>
-                    <h3 class="font-bold text-xl mb-2">Spa de Pies y Manos</h3>
-                    <p>Tratamiento relajante con exfoliación e hidratación profunda.</p>
-                </div>
-            </div>
-            
-            <!-- Gemini Nail Art Generator -->
+             <!-- AI Nail Art Generator -->
             <div id="nail-art-generator" class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
-                <h3 class="text-2xl font-bold text-center mb-2">✨ ¿Necesitas Inspiración?</h3>
-                <p class="text-center text-gray-600 mb-6">Describe un tema, color o estilo y te daremos ideas de diseños.</p>
+                <h3 class="text-2xl font-bold text-center mb-2">✨ ¿Necesitas Inspiración Cósmica?</h3>
+                <p class="text-center text-gray-600 mb-6">Describe un tema, color o estilo y nuestra IA te dará ideas de otro universo.</p>
                 <div class="flex flex-col sm:flex-row gap-2 mb-4">
-                    <input type="text" id="nail-art-prompt" placeholder="Ej: 'bosque encantado', 'verano neón', 'minimalista'" class="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
-                    <button id="generate-nail-art-btn" class="bg-pink-500 text-white font-bold py-2 px-6 rounded-md hover:bg-pink-600 flex items-center justify-center gap-2">
+                    <input type="text" id="nail-art-prompt" placeholder="Ej: 'galaxia', 'cuarzo rosa', 'aurora boreal'" class="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                    <button id="generate-nail-art-btn" class="bg-purple-600 text-white font-bold py-2 px-6 rounded-md hover:bg-purple-700 flex items-center justify-center gap-2">
                         <span id="nail-art-btn-text">Generar Ideas</span>
                         <div id="nail-art-spinner" class="spinner hidden"></div>
                     </button>
                 </div>
-                <div id="nail-art-results" class="mt-6 text-left"></div>
+                <div id="nail-art-results" class="mt-6 text-left whitespace-pre-wrap"></div>
             </div>
         </div>
     </section>
 
     <!-- Admin Panel -->
-    <section id="admin" class="container mx-auto px-6 py-16">
-        <h2 class="text-3xl font-bold text-center mb-10">Panel de Administrador - Próximas Reservas</h2>
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <ul id="bookings-list" class="space-y-4">
-                <li class="text-gray-500">Cargando reservas...</li>
-            </ul>
+    <section id="admin" class="container mx-auto px-6 py-16 hidden">
+        <h2 class="text-3xl font-bold text-center mb-10">Panel de Administrador</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- All Bookings -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                 <h3 class="text-xl font-semibold mb-4">Todas las Reservas</h3>
+                <ul id="admin-bookings-list" class="space-y-4 max-h-96 overflow-y-auto">
+                    <!-- Admin bookings will be listed here -->
+                </ul>
+            </div>
+            <!-- All Users -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                 <h3 class="text-xl font-semibold mb-4">Todos los Usuarios</h3>
+                <ul id="admin-users-list" class="space-y-4 max-h-96 overflow-y-auto">
+                    <!-- Admin users will be listed here -->
+                </ul>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2024 Bella Uña. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Nebula Nails. Todos los derechos reservados.</p>
+             <a href="#" id="admin-login-link" class="text-sm text-purple-300 hover:underline mt-2 inline-block">Login de Administrador</a>
         </div>
     </footer>
     
@@ -193,148 +179,131 @@
     </div>
     
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // --- CONFIGURACIÓN Y ESTADO GLOBAL ---
+        const API_BASE_URL = 'http://127.0.0.1:5000'; // CAMBIAR a la URL de tu backend desplegado
 
-        // --- CONFIGURACIÓN DE FIREBASE ---
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // --- ESTADO GLOBAL ---
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
-        let currentUser = null;
-        let currentUserProfile = null;
         let selectedDate = null;
-        let bookingsCache = {};
-        let isAuthInitialized = false; 
-        let userHasBooking = false;
-        let myBookingsUnsubscribe = null;
+        let currentUser = null; // Almacenará los datos decodificados del token
 
         // --- ELEMENTOS DEL DOM ---
         const authContainer = document.getElementById('auth-container');
         const authModal = document.getElementById('auth-modal');
         const authContent = document.getElementById('auth-content');
         const closeModalBtn = document.getElementById('close-modal-btn');
+        const messageModal = document.getElementById('message-modal');
+        const messageModalTitle = document.getElementById('message-modal-title');
+        const messageModalBody = document.getElementById('message-modal-body');
+        const messageModalButtons = document.getElementById('message-modal-buttons');
+
         const bookingTool = document.getElementById('booking-tool');
         const bookingLoginPrompt = document.getElementById('booking-login-prompt');
         const promptLoginBtn = document.getElementById('prompt-login-btn');
         const userInfoSection = document.getElementById('user-info');
         const myBookingsSection = document.getElementById('my-bookings');
         const myBookingsList = document.getElementById('my-bookings-list');
-        const messageModal = document.getElementById('message-modal');
-        const messageModalTitle = document.getElementById('message-modal-title');
-        const messageModalBody = document.getElementById('message-modal-body');
-        const messageModalButtons = document.getElementById('message-modal-buttons');
-        const generateNailArtBtn = document.getElementById('generate-nail-art-btn');
-        const nailArtPromptInput = document.getElementById('nail-art-prompt');
-        const nailArtResultsContainer = document.getElementById('nail-art-results');
-        const nailArtSpinner = document.getElementById('nail-art-spinner');
-        const nailArtBtnText = document.getElementById('nail-art-btn-text');
-        const adminBookingsList = document.getElementById('bookings-list');
+        const adminSection = document.getElementById('admin');
+        const adminNavLink = document.getElementById('admin-nav-link');
+        const adminBookingsList = document.getElementById('admin-bookings-list');
+        const adminUsersList = document.getElementById('admin-users-list');
         const appointmentDetailsContainer = document.getElementById('appointment-details');
+        
+        // --- SERVICIO DE API (Comunicación con el Backend) ---
+        const api = {
+            _getAuthHeaders: () => {
+                const token = localStorage.getItem('jwt_token');
+                return token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+            },
 
-
-        // --- INICIALIZACIÓN Y AUTENTICACIÓN ---
-        async function initializeAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+            async _request(endpoint, method = 'GET', body = null) {
+                const options = { method, headers: this._getAuthHeaders() };
+                if (body) options.body = JSON.stringify(body);
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+                    const responseData = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(responseData.message || 'Ocurrió un error en el servidor.');
+                    }
+                    return responseData;
+                } catch (error) {
+                     console.error(`API Error on ${method} ${endpoint}:`, error);
+                     throw error; // Re-throw to be caught by the calling function
                 }
-            } catch (error) {
-                console.error("Error en la autenticación inicial:", error);
+            },
+            
+            // Auth
+            login: (username, password) => api._request('/auth/login', 'POST', { username, password }),
+            register: (username, password) => api._request('/auth/register', 'POST', { username, password }),
+            adminLogin: (password) => api._request('/auth/admin/login', 'POST', { password }),
+            
+            // User
+            getUserPoints: () => api._request('/auth/points', 'GET'),
+            getUserBookings: (userId) => api._request(`/api/users/${userId}/bookings`, 'GET'),
+            
+            // Bookings
+            createBooking: (bookingData) => api._request('/api/bookings', 'POST', bookingData),
+            getBookingsForDate: (date) => api._request(`/api/bookings/date/${date}`,'GET'),
+            deleteBooking: (bookingId) => api._request(`/api/bookings/${bookingId}`, 'DELETE'),
+            
+            // Admin
+            getAllBookings: () => api._request('/api/bookings', 'GET'),
+            getAllUsers: () => api._request('/auth/admin/users', 'GET'),
+            deleteUser: (userId) => api._request(`/auth/admin/users/${userId}`, 'DELETE'),
+
+            // AI Features
+            generateNailArt: (prompt) => api._request('/api/generate-nail-art', 'POST', { prompt }),
+        };
+        
+        // --- MANEJO DE AUTENTICACIÓN (JWT) ---
+        function decodeJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                console.error("Failed to decode JWT:", e);
+                return null;
             }
         }
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user && !user.isAnonymous) {
-                currentUser = user;
-                await loadUserProfile(user.uid);
-                updateUIForLoggedInUser();
-                await loadUserLoyaltyPoints(user.uid);
-                listenForMyBookings(user.uid);
-            } else {
-                currentUser = user;
-                currentUserProfile = null;
-                updateUIForLoggedOutUser();
-            }
-
-            if (!isAuthInitialized) {
-                isAuthInitialized = true;
-                renderCalendar();
-                listenForBookings();
-            }
-        });
-
-        // --- LÓGICA DE UI (MODALES Y ESTADO) ---
-        function updateUIForLoggedInUser() {
-            authContainer.innerHTML = `<button id="logout-btn" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600">Salir</button>`;
-            document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
-            userInfoSection.classList.remove('hidden');
-            myBookingsSection.classList.remove('hidden');
-            document.getElementById('user-name-display').textContent = currentUserProfile?.name || 'No disponible';
-            document.getElementById('user-email-display').textContent = currentUser.email;
-            document.getElementById('user-phone-display').textContent = currentUserProfile?.phone || 'No disponible';
-            document.getElementById('user-id-display').textContent = currentUser.uid;
-            bookingTool.classList.remove('hidden');
-            bookingLoginPrompt.classList.add('hidden');
+        function handleLoginSuccess(token) {
+            localStorage.setItem('jwt_token', token);
+            currentUser = decodeJwt(token);
+            updateUI();
         }
 
-        function updateUIForLoggedOutUser() {
-            authContainer.innerHTML = `<button id="login-btn" class="text-gray-600 hover:text-pink-500">Ingresar</button>`;
-            document.getElementById('login-btn').addEventListener('click', () => showAuthForm('login'));
-            userInfoSection.classList.add('hidden');
-            myBookingsSection.classList.add('hidden');
-            bookingTool.classList.add('hidden');
-            bookingLoginPrompt.classList.remove('hidden');
-            if (myBookingsUnsubscribe) myBookingsUnsubscribe();
-            userHasBooking = false;
-        }
-
-        function showAuthForm(type) {
-            const isLogin = type === 'login';
-            authContent.innerHTML = `
-                <h2 class="text-2xl font-bold text-center mb-6">${isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</h2>
-                <form id="auth-form">
-                    <div id="register-fields" class="${isLogin ? 'hidden' : ''}">
-                        <div class="mb-4">
-                            <label for="name" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
-                            <input type="text" id="name" ${isLogin ? '' : 'required'} class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
-                        </div>
-                        <div class="mb-4">
-                            <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                            <input type="tel" id="phone" ${isLogin ? '' : 'required'} class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" id="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
-                    </div>
-                    <div class="mb-6">
-                        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña (mín. 6 caracteres)</label>
-                        <input type="password" id="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500">
-                    </div>
-                    <button type="submit" class="w-full bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600">${isLogin ? 'Ingresar' : 'Registrarme'}</button>
-                </form>
-                <p class="text-center text-sm mt-4">
-                    ${isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}
-                    <button id="switch-auth-btn" class="text-pink-600 hover:underline">${isLogin ? 'Regístrate' : 'Inicia Sesión'}</button>
-                </p>
-                <p id="auth-error" class="text-red-500 text-sm text-center mt-2"></p>
-            `;
-            authModal.classList.add('active');
-            document.getElementById('auth-form').addEventListener('submit', (e) => handleAuthSubmit(e, type));
-            document.getElementById('switch-auth-btn').addEventListener('click', () => showAuthForm(isLogin ? 'register' : 'login'));
+        function handleLogout() {
+            localStorage.removeItem('jwt_token');
+            currentUser = null;
+            updateUI();
         }
         
-        function showMessageModal(title, body, buttons = [{text: 'OK', class: 'bg-pink-500', action: () => messageModal.classList.remove('active')}]) {
+        async function handleAuthSubmit(e, type) {
+            e.preventDefault();
+            const form = e.target;
+            const username = form.username?.value;
+            const password = form.password.value;
+            
+            try {
+                let response;
+                if (type === 'register') {
+                    await api.register(username, password);
+                    response = await api.login(username, password);
+                } else if (type === 'login') {
+                     response = await api.login(username, password);
+                } else { // admin
+                     response = await api.adminLogin(password);
+                }
+                handleLoginSuccess(response.access_token);
+                authModal.classList.remove('active');
+            } catch (error) {
+                showMessageModal('Error de Autenticación', error.message);
+            }
+        }
+
+        // --- LÓGICA DE UI Y ACTUALIZACIÓN ---
+        function showMessageModal(title, body, buttons = [{text: 'OK', class: 'bg-purple-600', action: () => messageModal.classList.remove('active')}]) {
             messageModalTitle.textContent = title;
             messageModalBody.textContent = body;
             messageModalButtons.innerHTML = '';
@@ -348,407 +317,329 @@
             messageModal.classList.add('active');
         }
 
-        async function handleAuthSubmit(e, type) {
-            e.preventDefault();
-            const email = e.target.email.value;
-            const password = e.target.password.value;
-            const errorP = document.getElementById('auth-error');
-            errorP.textContent = '';
-            try {
-                if (type === 'register') {
-                    const name = e.target.name.value;
-                    const phone = e.target.phone.value;
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    // Create user profile document
-                    const profileRef = doc(db, `artifacts/${appId}/users/${user.uid}/profile/data`);
-                    await setDoc(profileRef, { name, phone, email });
-                    await initializeLoyaltyPoints(user.uid);
+        function updateUI() {
+            if (currentUser) {
+                // Logged In
+                authContainer.innerHTML = `<button id="logout-btn" class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700">Salir</button>`;
+                document.getElementById('logout-btn').addEventListener('click', handleLogout);
+                
+                userInfoSection.classList.remove('hidden');
+                myBookingsSection.classList.remove('hidden');
+                bookingTool.classList.remove('hidden');
+                bookingLoginPrompt.classList.add('hidden');
+                
+                document.getElementById('user-name-display').textContent = currentUser.username;
+                document.getElementById('user-id-display').textContent = currentUser.sub;
+                
+                loadUserSpecificData();
+                
+                if (currentUser.is_admin) {
+                    adminSection.classList.remove('hidden');
+                    adminNavLink.classList.remove('hidden');
+                    loadAdminData();
                 } else {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    adminSection.classList.add('hidden');
+                    adminNavLink.classList.add('hidden');
                 }
-                authModal.classList.remove('active');
+            } else {
+                // Logged Out
+                authContainer.innerHTML = `<button id="login-btn" class="text-gray-600 hover:text-purple-600">Ingresar</button>`;
+                document.getElementById('login-btn').addEventListener('click', () => showAuthForm('login'));
+                
+                [userInfoSection, myBookingsSection, adminSection, adminNavLink, bookingTool].forEach(el => el.classList.add('hidden'));
+                bookingLoginPrompt.classList.remove('hidden');
+            }
+            if(selectedDate) selectDate(selectedDate);
+            renderCalendar();
+        }
+        
+        async function loadUserSpecificData() {
+            try {
+                const pointsData = await api.getUserPoints();
+                document.getElementById('loyalty-points-display').textContent = pointsData.points;
+                
+                const bookingsData = await api.getUserBookings(currentUser.sub);
+                myBookingsList.innerHTML = ''; // Clear list
+                if (bookingsData.length > 0) {
+                     bookingsData.forEach(booking => {
+                        const li = document.createElement('li');
+                        li.className = 'p-3 bg-purple-50 rounded-md flex justify-between items-center';
+                        li.innerHTML = `
+                            <div>
+                                <p class="font-semibold">${new Date(booking.start_time).toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long'})}</p>
+                                <p class="text-gray-700">a las ${new Date(booking.start_time).toLocaleTimeString('es-ES', {hour: '2-digit', minute: '2-digit'})} hs</p>
+                            </div>
+                            <button data-booking-id="${booking.id}" class="cancel-booking-btn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm">Cancelar</button>
+                        `;
+                        myBookingsList.appendChild(li);
+                     });
+                } else {
+                    myBookingsList.innerHTML = `<li>No tienes reservas próximas.</li>`;
+                }
+
             } catch (error) {
-                console.error("Error de autenticación:", error.code, error.message);
-                if (error.code === 'auth/operation-not-allowed') {
-                    errorP.textContent = "Error: El registro por email está desactivado. Habilítalo en la consola de Firebase.";
-                 } else {
-                    errorP.textContent = "Error: El email o la contraseña no son válidos.";
-                 }
+                console.error("Error loading user data:", error);
+                myBookingsList.innerHTML = `<li>Error al cargar tus reservas.</li>`;
             }
         }
         
-        closeModalBtn.addEventListener('click', () => authModal.classList.remove('active'));
-        promptLoginBtn.addEventListener('click', () => showAuthForm('login'));
+        async function loadAdminData() {
+            try {
+                // Load all bookings
+                const allBookings = await api.getAllBookings();
+                adminBookingsList.innerHTML = allBookings.length > 0
+                    ? allBookings.map(b => `<li class="p-2 bg-gray-100 rounded">Reserva de <b>${b.username}</b> para el ${new Date(b.start_time).toLocaleString('es-ES')}</li>`).join('')
+                    : `<li>No hay reservas en el sistema.</li>`;
+                
+                // Load all users
+                const allUsers = await api.getAllUsers();
+                adminUsersList.innerHTML = ''; // Clear list
+                allUsers.forEach(user => {
+                    const li = document.createElement('li');
+                    li.className = 'p-3 bg-gray-100 rounded-md flex justify-between items-center';
+                    li.innerHTML = `
+                        <div>
+                            <p class="font-semibold">${user.username}</p>
+                            <p class="text-sm text-gray-600">ID: ${user.id}</p>
+                        </div>
+                        ${user.id !== currentUser.sub ? `<button data-user-id="${user.id}" data-user-name="${user.username}" class="delete-user-btn bg-red-500 text-white px-3 py-1 rounded-md text-sm">Eliminar</button>` : '<span class="text-sm text-gray-500">(Admin Actual)</span>'}
+                    `;
+                    adminUsersList.appendChild(li);
+                });
 
-        // --- LÓGICA DE PERFIL DE USUARIO ---
-        async function loadUserProfile(userId) {
-            const profileRef = doc(db, `artifacts/${appId}/users/${userId}/profile/data`);
-            const docSnap = await getDoc(profileRef);
-            if (docSnap.exists()) {
-                currentUserProfile = docSnap.data();
-            } else {
-                console.log("No such profile document!");
-                currentUserProfile = null;
+            } catch (error) {
+                console.error("Error loading admin data:", error);
+                adminBookingsList.innerHTML = `<li>Error al cargar datos de admin: ${error.message}</li>`;
             }
         }
 
-        // --- LÓGICA DEL CALENDARIO ---
+        function showAuthForm(type) {
+            const isLogin = type === 'login';
+            const isAdmin = type === 'admin';
+            authContent.innerHTML = `
+                <h2 class="text-2xl font-bold text-center mb-6">${isAdmin ? 'Login Admin' : (isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')}</h2>
+                <form id="auth-form" class="space-y-4">
+                    <div class="${isAdmin ? 'hidden' : ''}">
+                        <label for="username" class="block text-sm font-medium text-gray-700">Usuario (email)</label>
+                        <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                        <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700">${isAdmin ? 'Ingresar como Admin' : (isLogin ? 'Ingresar' : 'Registrarme')}</button>
+                </form>
+                <p class="text-center text-sm mt-4">
+                    ${isLogin ? '¿No tienes cuenta? <button id="switch-auth-btn" class="text-purple-600 hover:underline">Regístrate</button>' : (isAdmin ? '' : '¿Ya tienes cuenta? <button id="switch-auth-btn" class="text-purple-600 hover:underline">Inicia Sesión</button>')}
+                </p>
+            `;
+            authModal.classList.add('active');
+            document.getElementById('auth-form').addEventListener('submit', (e) => handleAuthSubmit(e, type));
+            const switchBtn = document.getElementById('switch-auth-btn');
+            if (switchBtn) switchBtn.addEventListener('click', () => showAuthForm(isLogin ? 'register' : 'login'));
+        }
+        
+        // --- CALENDARIO Y RESERVAS ---
         function renderCalendar() {
             const calendarGrid = document.getElementById('calendar-grid');
             const monthYearEl = document.getElementById('month-year');
             const today = new Date();
             today.setHours(0, 0, 0, 0);
+
             const firstDay = new Date(currentYear, currentMonth, 1);
             const lastDay = new Date(currentYear, currentMonth + 1, 0);
             const daysInMonth = lastDay.getDate();
             const startDay = firstDay.getDay();
+
             monthYearEl.textContent = `${firstDay.toLocaleString('es-ES', { month: 'long' })} ${currentYear}`;
             calendarGrid.innerHTML = '<div class="font-bold">D</div><div class="font-bold">L</div><div class="font-bold">M</div><div class="font-bold">M</div><div class="font-bold">J</div><div class="font-bold">V</div><div class="font-bold">S</div>';
-            for (let i = 0; i < startDay; i++) calendarGrid.innerHTML += '<div></div>';
+            
+            for (let i = 0; i < startDay; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
+
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(currentYear, currentMonth, day);
                 const dateStr = date.toISOString().split('T')[0];
                 const dayEl = document.createElement('div');
                 dayEl.textContent = day;
-                dayEl.classList.add('p-2', 'rounded-full', 'cursor-pointer', 'calendar-day');
+                dayEl.className = 'p-2 rounded-full cursor-pointer calendar-day';
                 dayEl.dataset.date = dateStr;
+
                 if (date < today) {
                     dayEl.classList.add('disabled');
                 } else {
                     dayEl.addEventListener('click', () => selectDate(dateStr));
                 }
                 if (selectedDate === dateStr) dayEl.classList.add('selected');
+                
                 calendarGrid.appendChild(dayEl);
             }
         }
         
-        document.getElementById('prev-month').addEventListener('click', () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); });
-        document.getElementById('next-month').addEventListener('click', () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(); });
-
-        // --- LÓGICA DE RESERVAS ---
         async function selectDate(dateStr) {
             selectedDate = dateStr;
             renderCalendar();
             appointmentDetailsContainer.classList.remove('hidden');
-            document.getElementById('selected-date-display').textContent = new Date(dateStr + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('selected-date-display').textContent = new Date(dateStr + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
             await renderTimeSlots(dateStr);
         }
 
         async function renderTimeSlots(dateStr) {
             const timeSlotsGrid = document.getElementById('time-slots-grid');
             timeSlotsGrid.innerHTML = 'Cargando turnos...';
-            const standardSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'];
-            const bookedSlots = await getBookingsForDate(dateStr);
-            timeSlotsGrid.innerHTML = '';
-            standardSlots.forEach(time => {
-                const slotEl = document.createElement('div');
-                slotEl.textContent = time;
-                slotEl.classList.add('p-2', 'rounded-md', 'cursor-pointer', 'text-center', 'border', 'border-gray-300', 'time-slot');
-                slotEl.dataset.time = time;
-                if (bookedSlots.includes(time)) {
-                    slotEl.classList.add('disabled');
-                } else {
-                    slotEl.addEventListener('click', () => bookAppointment(dateStr, time));
-                }
-                timeSlotsGrid.appendChild(slotEl);
-            });
+            
+            try {
+                const standardSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'];
+                const { booked_slots } = await api.getBookingsForDate(dateStr);
+                
+                timeSlotsGrid.innerHTML = '';
+                standardSlots.forEach(time => {
+                    const slotEl = document.createElement('div');
+                    slotEl.textContent = time;
+                    slotEl.className = 'p-2 rounded-md cursor-pointer text-center border border-gray-300 time-slot';
+                    
+                    if (booked_slots.includes(time)) {
+                        slotEl.classList.add('disabled');
+                    } else {
+                        slotEl.addEventListener('click', () => confirmBooking(dateStr, time));
+                    }
+                    timeSlotsGrid.appendChild(slotEl);
+                });
+            } catch (error) {
+                timeSlotsGrid.innerHTML = `<p class="text-red-500 col-span-full">Error al cargar los turnos.</p>`;
+                console.error(error);
+            }
         }
         
-        async function getBookingsForDate(dateStr) {
-            if (!auth.currentUser) return [];
-            if (bookingsCache[dateStr]) return bookingsCache[dateStr];
-            const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
-            const q = query(bookingsRef, where("date", "==", dateStr));
-            const querySnapshot = await getDocs(q);
-            const bookedTimes = querySnapshot.docs.map(doc => doc.data().time);
-            bookingsCache[dateStr] = bookedTimes;
-            return bookedTimes;
-        }
-
-        async function bookAppointment(date, time) {
-            if (!currentUser || currentUser.isAnonymous) {
-                showMessageModal('Acción Requerida', 'Debes iniciar sesión con tu cuenta para poder reservar un turno.');
+        function confirmBooking(date, time) {
+            if (!currentUser) {
+                showMessageModal('Acción Requerida', 'Debes iniciar sesión para reservar.');
                 return;
             }
-            if (userHasBooking) {
-                showMessageModal('Reserva Existente', 'Ya tienes una reserva activa. Para cambiar de horario, por favor cancela tu reserva actual y luego elige un nuevo turno.');
-                return;
-            }
+            const startTime = new Date(`${date}T${time}:00`);
+            const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
 
-            const manicurist = document.getElementById('manicurist-select').value;
-            const userName = currentUserProfile?.name || currentUser.email;
-
-            const proceedWithBooking = async () => {
-                try {
-                    messageModal.classList.remove('active');
-                    const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
-                    await addDoc(bookingsRef, { 
-                        userId: currentUser.uid, 
-                        userName: userName,
-                        userEmail: currentUser.email, 
-                        date: date, 
-                        time: time, 
-                        manicurist: manicurist,
-                        createdAt: new Date() 
-                    });
-                    await addLoyaltyPoints(currentUser.uid, 10);
-                    showMessageModal('¡Éxito!', `¡Tu reserva ha sido confirmada! Has ganado 10 puntos de fidelidad.`);
-                    bookingsCache[date] = null;
-                    await renderTimeSlots(date);
-                } catch (error) {
-                    console.error("Error al guardar la reserva: ", error);
-                    showMessageModal("Error", "Hubo un problema al procesar tu reserva. Por favor, inténtalo de nuevo.");
-                }
+            const bookingData = {
+                start_time: startTime.toISOString(),
+                end_time: endTime.toISOString()
             };
-            
+
             showMessageModal(
                 'Confirmar Reserva',
-                `¿Deseas confirmar tu reserva para el ${new Date(date + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })} a las ${time} con ${manicurist}?`,
+                `¿Deseas confirmar tu reserva para el ${startTime.toLocaleDateString('es-ES')} a las ${startTime.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'})} hs?`,
                 [
                     {text: 'Cancelar', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')},
-                    {text: 'Confirmar', class: 'bg-pink-500', action: proceedWithBooking}
+                    {text: 'Confirmar', class: 'bg-purple-600', action: async () => {
+                        try {
+                           await api.createBooking(bookingData);
+                           showMessageModal("¡Éxito!", "Tu reserva fue creada. ¡Has ganado puntos estelares!");
+                           selectDate(date); // Refresh time slots
+                           loadUserSpecificData();
+                           if(currentUser.is_admin) loadAdminData();
+                        } catch (error) {
+                           showMessageModal("Error", `No se pudo crear la reserva: ${error.message}`);
+                        }
+                    }}
                 ]
             );
         }
 
-        function listenForMyBookings(userId) {
-            if (myBookingsUnsubscribe) myBookingsUnsubscribe(); 
-            const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
-            const q = query(bookingsRef, where("userId", "==", userId));
-
-            myBookingsUnsubscribe = onSnapshot(q, (snapshot) => {
-                myBookingsList.innerHTML = '';
-                const todayStr = new Date().toISOString().split('T')[0];
-                
-                const myFutureBookings = snapshot.docs
-                    .map(doc => ({ id: doc.id, ...doc.data() }))
-                    .filter(booking => booking.date >= todayStr);
-
-                if (myFutureBookings.length === 0) {
-                    myBookingsList.innerHTML = `<li class="text-gray-500">No tienes reservas próximas.</li>`;
-                    userHasBooking = false;
-                    return;
-                }
-                
-                userHasBooking = true;
-                myFutureBookings.sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time));
-
-                myFutureBookings.forEach(booking => {
-                    const li = document.createElement('li');
-                    li.classList.add('p-3', 'bg-pink-50', 'rounded-md', 'flex', 'justify-between', 'items-center');
-                    li.innerHTML = `
-                        <div>
-                            <p class="font-semibold">${new Date(booking.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-                            <p class="text-gray-700">a las ${booking.time} hs con ${booking.manicurist}</p>
-                        </div>
-                        <button data-booking-id="${booking.id}" data-booking-date="${booking.date}" class="cancel-btn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm">Cancelar</button>
-                    `;
-                    myBookingsList.appendChild(li);
-                });
-
-                document.querySelectorAll('.cancel-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const bookingId = e.target.dataset.bookingId;
-                        const bookingDate = e.target.dataset.bookingDate;
-                        cancelAppointment(bookingId, bookingDate);
-                    });
-                });
-            }, (error) => {
-                console.error("Error en el listener 'myBookings':", error);
-                myBookingsList.innerHTML = `<li class="text-red-500 font-semibold">Error al cargar tus reservas.</li>`;
-            });
+        async function handleCancelBooking(bookingId) {
+             try {
+                await api.deleteBooking(bookingId);
+                showMessageModal("Reserva Cancelada", "Tu reserva ha sido cancelada.");
+                loadUserSpecificData();
+                if(currentUser.is_admin) loadAdminData();
+                if(selectedDate) selectDate(selectedDate);
+            } catch(error) {
+                showMessageModal("Error", `No se pudo cancelar la reserva: ${error.message}`);
+            }
         }
         
-        function cancelAppointment(bookingId, bookingDate) {
-             const proceedWithCancellation = async () => {
-                try {
-                    messageModal.classList.remove('active');
-                    const bookingRef = doc(db, `artifacts/${appId}/public/data/bookings`, bookingId);
-                    await deleteDoc(bookingRef);
-                    await addLoyaltyPoints(currentUser.uid, -10); // Deduct points
-                    showMessageModal('Reserva Cancelada', 'Tu reserva ha sido cancelada exitosamente.');
-                    
-                    bookingsCache[bookingDate] = null;
-                    if (selectedDate === bookingDate) {
-                        await renderTimeSlots(bookingDate);
-                    }
-                } catch (error) {
-                    console.error("Error al cancelar la reserva: ", error);
-                    showMessageModal("Error", "Hubo un problema al cancelar tu reserva.");
-                }
-            };
-
-            showMessageModal(
-                'Cancelar Reserva',
-                '¿Estás segura de que quieres cancelar tu reserva? Esta acción no se puede deshacer.',
-                [
-                    {text: 'No, mantener', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')},
-                    {text: 'Sí, cancelar', class: 'bg-red-500', action: proceedWithCancellation}
-                ]
-            );
-        }
-
-        // --- SISTEMA DE FIDELIZACIÓN ---
-        async function initializeLoyaltyPoints(userId) {
-            const loyaltyRef = doc(db, `artifacts/${appId}/users/${userId}/loyalty/points`);
-            await setDoc(loyaltyRef, { value: 0 });
-        }
-        
-        async function loadUserLoyaltyPoints(userId) {
-            const loyaltyRef = doc(db, `artifacts/${appId}/users/${userId}/loyalty/points`);
-            const docSnap = await getDoc(loyaltyRef);
-            document.getElementById('loyalty-points-display').textContent = docSnap.exists() ? docSnap.data().value : '0';
-        }
-        
-        async function addLoyaltyPoints(userId, pointsToAdd) {
-             const loyaltyRef = doc(db, `artifacts/${appId}/users/${userId}/loyalty/points`);
-             const docSnap = await getDoc(loyaltyRef);
-             const currentPoints = docSnap.exists() ? docSnap.data().value : 0;
-             const newPoints = Math.max(0, currentPoints + pointsToAdd); // Ensure points don't go below zero
-             await setDoc(loyaltyRef, { value: newPoints });
-             document.getElementById('loyalty-points-display').textContent = newPoints;
-        }
-        
-        // --- GEMINI API FUNCTIONS ---
-
-        async function callGemini(prompt) {
-            const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-            
-            const payload = {
-                contents: [{
-                    role: "user",
-                    parts: [{ text: prompt }]
-                }]
-            };
-
+        async function handleDeleteUser(userId, userName) {
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API call failed with status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    return result.candidates[0].content.parts[0].text;
-                } else {
-                    console.error("Respuesta inesperada de la API:", result);
-                    return "No se pudo obtener una respuesta. Inténtalo de nuevo.";
-                }
-            } catch (error) {
-                console.error("Error llamando a la API de Gemini:", error);
-                return "Ocurrió un error al contactar al servicio de IA.";
+                await api.deleteUser(userId);
+                showMessageModal("Usuario Eliminado", `El usuario ${userName} ha sido eliminado.`);
+                loadAdminData();
+            } catch(error) {
+                showMessageModal("Error", `No se pudo eliminar al usuario: ${error.message}`);
             }
         }
         
-        generateNailArtBtn.addEventListener('click', async () => {
-            const userInput = nailArtPromptInput.value.trim();
-            if (!userInput) {
-                showMessageModal("Entrada Requerida", "Por favor, escribe un tema para generar ideas.");
-                return;
-            }
+        // --- EVENT LISTENERS ---
+        function addEventListeners() {
+            closeModalBtn.addEventListener('click', () => authModal.classList.remove('active'));
+            promptLoginBtn.addEventListener('click', () => showAuthForm('login'));
+            document.getElementById('admin-login-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                showAuthForm('admin');
+            });
+            
+            document.getElementById('prev-month').addEventListener('click', () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); });
+            document.getElementById('next-month').addEventListener('click', () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCalendar(); });
+            
+            // Event delegation for dynamic buttons
+            document.body.addEventListener('click', e => {
+                if (e.target.matches('.delete-user-btn')) {
+                    const userId = e.target.dataset.userId;
+                    const userName = e.target.dataset.userName;
+                    showMessageModal('¿Estás seguro?', `Esto eliminará al usuario ${userName} y todas sus reservas. Esta acción no se puede deshacer.`, [
+                        {text: 'Cancelar', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')},
+                        {text: 'Eliminar Usuario', class: 'bg-red-600', action: () => handleDeleteUser(userId, userName)}
+                    ]);
+                }
+                if(e.target.matches('.cancel-booking-btn')){
+                    const bookingId = e.target.dataset.bookingId;
+                     showMessageModal('¿Cancelar Reserva?', '¿Estás segura de que quieres cancelar tu reserva?', [
+                        {text: 'No, mantener', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')},
+                        {text: 'Sí, cancelar', class: 'bg-red-500', action: () => handleCancelBooking(bookingId)}
+                    ]);
+                }
+            });
 
-            nailArtSpinner.classList.remove('hidden');
-            nailArtBtnText.textContent = 'Generando...';
-            generateNailArtBtn.disabled = true;
-            nailArtResultsContainer.innerHTML = '';
+            // AI Generator Listener
+            document.getElementById('generate-nail-art-btn').addEventListener('click', async () => {
+                const btn = document.getElementById('generate-nail-art-btn');
+                const promptInput = document.getElementById('nail-art-prompt');
+                const resultsContainer = document.getElementById('nail-art-results');
+                const spinner = document.getElementById('nail-art-spinner');
+                const btnText = document.getElementById('nail-art-btn-text');
 
-            const prompt = `Actúa como una experta manicurista y artista de uñas para el salón "Bella Uña". Genera 3 ideas creativas y concisas para un diseño de uñas inspirado en el tema: "${userInput}". Para cada idea, proporciona un nombre creativo, una breve descripción del diseño y los colores clave. Formatea tu respuesta estrictamente como una lista de viñetas.`;
-            
-            const resultText = await callGemini(prompt);
-            
-            nailArtResultsContainer.innerHTML = resultText
-                .split('\n')
-                .map(line => `<p class="mb-2">${line.replace(/\*/g, '•')}</p>`)
-                .join('');
-            
-            nailArtSpinner.classList.add('hidden');
-            nailArtBtnText.textContent = 'Generar Ideas';
-            generateNailArtBtn.disabled = false;
-        });
-
-        async function generateReminder(booking) {
-            const formattedDate = new Date(booking.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
-            const prompt = `Actúa como la recepcionista amigable del salón de uñas "Bella Uña". Escribe un recordatorio de turno corto, profesional y amigable para enviar a una clienta (${booking.userName}) por WhatsApp o SMS. El turno es el ${formattedDate} a las ${booking.time} hs con la manicura ${booking.manicurist}. Incluye una frase para que confirmen su asistencia.`;
-            const reminderText = await callGemini(prompt);
-            
-            showMessageModal(
-                '✨ Recordatorio Sugerido',
-                reminderText,
-                [
-                    {text: 'Copiar', class: 'bg-pink-500', action: () => {
-                        const textarea = document.createElement('textarea');
-                        textarea.value = reminderText;
-                        document.body.appendChild(textarea);
-                        textarea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textarea);
-                        showMessageModal('Copiado', 'El mensaje se ha copiado a tu portapapeles.');
-                    }},
-                    {text: 'Cerrar', class: 'bg-gray-400', action: () => messageModal.classList.remove('active')}
-                ]
-            );
-        }
-
-        // --- PANEL DE ADMINISTRADOR ---
-        function listenForBookings() {
-            if (!auth.currentUser) return;
-            
-            const bookingsRef = collection(db, `artifacts/${appId}/public/data/bookings`);
-            onSnapshot(query(bookingsRef), (snapshot) => {
-                adminBookingsList.innerHTML = '';
-                const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                bookings.sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time));
-                if (bookings.length === 0) {
-                    adminBookingsList.innerHTML = '<li class="text-gray-500">No hay reservas próximas.</li>';
+                if (!promptInput.value.trim()) {
+                    showMessageModal("Entrada requerida", "Por favor, describe una idea para generar diseños.");
                     return;
                 }
-                bookings.forEach(booking => {
-                    const li = document.createElement('li');
-                    li.classList.add('p-3', 'bg-pink-50', 'rounded-md', 'flex', 'justify-between', 'items-center', 'flex-wrap', 'gap-2');
-                    li.innerHTML = `
-                        <div>
-                            <p class="font-semibold">${new Date(booking.date + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })} - ${booking.time}</p>
-                            <p class="text-sm text-gray-600">Cliente: ${booking.userName}</p>
-                            <p class="text-sm text-gray-500">Manicura: ${booking.manicurist}</p>
-                        </div>
-                        <button data-booking='${JSON.stringify(booking)}' class="reminder-btn bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 text-sm flex items-center gap-1">
-                           ✨ Generar Recordatorio
-                        </button>
-                    `;
-                    adminBookingsList.appendChild(li);
-                });
 
-                adminBookingsList.addEventListener('click', (e) => {
-                    const button = e.target.closest('.reminder-btn');
-                    if (button) {
-                        const bookingData = JSON.parse(button.dataset.booking);
-                        generateReminder(bookingData);
-                    }
-                });
+                btn.disabled = true;
+                spinner.classList.remove('hidden');
+                btnText.textContent = 'Generando...';
+                resultsContainer.innerHTML = '';
 
-                bookingsCache = {};
-                if (selectedDate) renderTimeSlots(selectedDate);
-            }, (error) => {
-                console.error("Error en el listener de Firestore:", error);
-                adminBookingsList.innerHTML = `<li class="text-red-500 font-semibold">Error al cargar reservas: Permiso denegado. Verifica las reglas de seguridad de Firestore.</li>`;
+                try {
+                    const response = await api.generateNailArt(promptInput.value);
+                    // Assuming backend returns { "text": "..." }
+                    resultsContainer.innerHTML = response.text.replace(/\*/g, '•').split('\n').map(line => `<p>${line}</p>`).join('');
+
+                } catch (error) {
+                    resultsContainer.innerHTML = `<p class="text-red-500">Error al generar ideas: ${error.message}</p>`;
+                } finally {
+                    btn.disabled = false;
+                    spinner.classList.add('hidden');
+                    btnText.textContent = 'Generar Ideas';
+                }
             });
         }
         
-        // --- INICIO DE LA APP ---
-        window.onload = async () => {
-            await initializeAuth();
-        };
+        // --- INICIALIZACIÓN ---
+        function initializeApp() {
+            const token = localStorage.getItem('jwt_token');
+            if (token) {
+                currentUser = decodeJwt(token);
+            }
+            addEventListeners();
+            updateUI();
+        }
+
+        initializeApp();
     </script>
 </body>
 </html>
-
