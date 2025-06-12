@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, g
+from routes.auth import admin_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.booking import Booking
 from models.user import User # Import User model
@@ -78,6 +79,7 @@ def create_booking():
 
     return jsonify({"message": "Booking created successfully"}), 201
 @booking_bp.route('/bookings', methods=['GET'])
+@admin_required()
 @jwt_required()
 def get_all_bookings():
     # In a real application, you would likely add administrator checks here

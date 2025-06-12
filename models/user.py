@@ -11,3 +11,10 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(username='{self.username}', points={self.points})>"
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'points': self.points
+        }
